@@ -11,7 +11,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        // Get the student number from the text box
+        // Gago boi
         $searchQuery = $request->input('student_number');
         $student = null;
         $attendances = collect(); 
