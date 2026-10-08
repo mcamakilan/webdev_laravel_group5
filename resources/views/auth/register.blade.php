@@ -23,6 +23,13 @@
             <x-input-error :messages="$errors->get('email')" class="mt-1.5" />
         </div>
 
+        <!-- Password Requirements Tip Banner -->
+        <div class="p-3 bg-teal-50/60 border border-teal-200 rounded-lg text-xs text-teal-800 space-y-1">
+            <p class="font-semibold">Password Requirements:</p>
+            <p>• Minimum 8 characters long</p>
+            <p>• Must include uppercase & lowercase letters, numbers, and special characters (e.g., @, !, _)</p>
+        </div>
+
         <!-- Password -->
         <div>
             <x-input-label for="password" :value="__('Password')" class="text-gray-600 text-sm font-medium" />

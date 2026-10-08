@@ -145,6 +145,28 @@
                             <x-input-error :messages="$errors->get('photo')" class="mt-2" />
                         </div>
 
+                        <!-- Password Helper Tip Banner -->
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg text-xs text-teal-800 space-y-1">
+                            <p class="font-semibold">Password Requirements:</p>
+                            <p>• Minimum 8 characters long</p>
+                            <p>• Must include uppercase & lowercase letters, numbers, and special characters (e.g., @, !, _)</p>
+                        </div>
+
+                        <!-- Password & Confirm Password Fields -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                            <div>
+                                <x-input-label for="password" :value="__('Password')" />
+                                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
+                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                            </div>
+                        </div>
+
                         <!-- Submit Button -->
                         <div class="pt-2">
                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 transition ease-in-out duration-150">

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'year_and_section',
         'photo',
         'password',
+        'role',
     ];
 
     /**

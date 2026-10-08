@@ -22,7 +22,7 @@
 
         <!-- Email/Student ID -->
         <div>
-            <x-input-label for="email" :value="__('Email or Student ID')" class="text-gray-600 text-sm font-medium" />
+            <x-input-label for="email" :value="__('Email')" class="text-gray-600 text-sm font-medium" />
             <x-text-input id="email"
                 class="block mt-1.5 w-full rounded-lg border-gray-200 bg-white/80 text-gray-800 placeholder-gray-400
                        focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-200 transition"
@@ -47,7 +47,7 @@
             <x-input-error :messages="$errors->get('password')" class="mt-1.5" />
         </div>
 
-        <!-- Remember Me -->
+        <!-- Remember Me & Options -->
         <div class="flex items-center justify-between pt-1">
             <label for="remember_me" class="inline-flex items-center cursor-pointer select-none">
                 <input id="remember_me" type="checkbox"
@@ -75,10 +75,17 @@
         </button>
     </form>
     
-    <!-- Go Back Link -->
-    <div class="mt-6 text-center">
-        <a href="{{ route('role.selection') }}" class="text-sm text-gray-500 hover:text-gray-700 hover:underline transition">
-            &larr; Back to login selection
-        </a>
+    <!-- Go Back & Registration Links -->
+    <div class="mt-6 space-y-2 text-center">
+        <div>
+            <a href="{{ route('student.register') }}" class="text-sm text-blue-600 hover:text-blue-700 hover:underline transition">
+                {{ __("Don't have an account? Register") }}
+            </a>
+        </div>
+        <div>
+            <a href="{{ route('role.selection') }}" class="text-sm text-gray-500 hover:text-gray-700 hover:underline transition">
+                &larr; Back to login selection
+            </a>
+        </div>
     </div>
 </x-guest-layout>

@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        // Gago boi
+        // Get the student number from the search input
         $searchQuery = $request->input('student_number');
         $student = null;
         $attendances = collect(); 
@@ -20,7 +21,7 @@ class AttendanceController extends Controller
             // Find the student in the database
             $student = User::where('student_number', $searchQuery)->first();
 
-            // If a student is found, get their attendance records ordered by newest first
+            // If a student is found, fetch their attendance records ordered by newest first
             if ($student) {
                 $attendances = Attendance::where('user_id', $student->id)->latest()->get();
             }
@@ -38,6 +39,7 @@ class AttendanceController extends Controller
             'mobile_number'    => ['required', 'string', 'max:20'],
             'year_and_section' => ['required', 'string', 'max:50'],
             'photo'            => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'password'         => ['required', 'confirmed', Password::defaults()],
         ]);
 
         $photoPath = null;
@@ -55,7 +57,7 @@ class AttendanceController extends Controller
             'mobile_number'    => $request->mobile_number,
             'year_and_section' => $request->year_and_section,
             'photo'            => $photoPath,
-            'password'         => Hash::make('password123'), // Default temporary password
+            'password'         => Hash::make($request->password),
         ]);
 
         return redirect()->route('attendance')->with('success', 'Student registered successfully!');

@@ -34,20 +34,26 @@ Route::middleware('guest')->group(function () {
         return view('auth.student-register');
     })->name('student.register');
 
-    // Fixed: Pointing directly to StudentRegisterController inside guest middleware
     Route::post('/register/student', [StudentRegisterController::class, 'store'])->name('student.register.submit');
 });
 // ==============================================================
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// ADMIN-ONLY ROUTES
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
 
-Route::middleware('auth')->group(function () {
+// STUDENT-ONLY / SHARED AUTHENTICATED ROUTES
+Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
     Route::post('/attendance/register-student', [AttendanceController::class, 'registerStudent'])->name('attendance.register-student');
     Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
-    
+});
+
+// SHARED AUTHENTICATED ROUTES (ANY LOGGED-IN USER)
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
