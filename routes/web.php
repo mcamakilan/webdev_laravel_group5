@@ -38,22 +38,38 @@ Route::middleware('guest')->group(function () {
 });
 // ==============================================================
 
-// ADMIN-ONLY ROUTES
+// ==============================================================
+// ADMIN-ONLY ROUTES (Protected by RoleMiddleware)
+// ==============================================================
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    // Attendance Monitoring Main Landing Page
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+    
+    // View/Scan Lookup Student Attendance
+    Route::get('/attendance/view', [AttendanceController::class, 'show'])->name('attendance.show');
+
+    // Student Registration Form & Action
+    Route::get('/attendance/register', [AttendanceController::class, 'create'])->name('attendance.register');
+    Route::post('/attendance/register', [AttendanceController::class, 'storeStudent'])->name('attendance.store-student');
+
+    // Log Check-In Time
+    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
+
+    // Edit Student Details
+    Route::get('/attendance/student/{id}/edit', [AttendanceController::class, 'edit'])->name('attendance.student.edit');
+    Route::put('/attendance/student/{id}', [AttendanceController::class, 'update'])->name('attendance.student.update');
+});
+
+// ==============================================================
+// SHARED AUTHENTICATED ROUTES (Accessible by Admins & Students)
+// ==============================================================
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Shared Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-});
 
-// STUDENT-ONLY / SHARED AUTHENTICATED ROUTES
-Route::middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
-    Route::post('/attendance/register-student', [AttendanceController::class, 'registerStudent'])->name('attendance.register-student');
-    Route::post('/attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
-});
-
-// SHARED AUTHENTICATED ROUTES (ANY LOGGED-IN USER)
-Route::middleware('auth')->group(function () {
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
