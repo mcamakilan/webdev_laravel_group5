@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -21,26 +23,37 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Handle an incoming admin authentication request with 2FA
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->ensureIsNotRateLimited();
 
-        // Ensure only Admin users can access this portal
-        if (Auth::user()->role !== 'admin') {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+        $user = User::where('email', $request->email)->first();
 
+        if (! $user || ! \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        if ($user->role !== 'admin') {
             throw ValidationException::withMessages([
                 'email' => 'This portal is restricted to Admin accounts only.',
             ]);
         }
 
-        $request->session()->regenerate();
+        // Generate 2FA code and write to log (for local testing visibility)
+        $otp = $user->generateTwoFactorCode();
+        Log::info("2FA OTP Code for Admin ({$user->email}): {$otp}");
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        session([
+            '2fa_user_id' => $user->id,
+            '2fa_remember' => $request->boolean('remember'),
+        ]);
+
+        return redirect()->route('2fa.index')
+            ->with('status', 'A 2FA code has been generated. (Test Code: ' . $otp . ')');
     }
 
     /**
@@ -51,7 +64,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

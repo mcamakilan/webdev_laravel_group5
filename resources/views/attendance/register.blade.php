@@ -39,29 +39,28 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <div>
-                        <x-input-label for="year_and_section" :value="__('Year & Section')" />
-                        <x-text-input id="year_and_section" class="block mt-1 w-full" type="text" name="year_and_section" :value="old('year_and_section')" required />
-                        <x-input-error :messages="$errors->get('year_and_section')" class="mt-2" />
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="college_program" :value="__('College Program')" />
+                            <x-text-input id="college_program" class="block mt-1 w-full" type="text" name="college_program" :value="old('college_program')" placeholder="e.g. BSIT, BSCS" required />
+                            <x-input-error :messages="$errors->get('college_program')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="year_and_section" :value="__('Year & Section')" />
+                            <x-text-input id="year_and_section" class="block mt-1 w-full" type="text" name="year_and_section" :value="old('year_and_section')" placeholder="e.g. 3A, 4B" required />
+                            <x-input-error :messages="$errors->get('year_and_section')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div>
-                        <x-input-label for="photo" :value="__('Upload Photo')" />
+                        <x-input-label for="photo" :value="__('Upload Photo (JPG/PNG)')" />
                         <input id="photo" class="block mt-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 p-2" type="file" name="photo" accept="image/*" />
                         <x-input-error :messages="$errors->get('photo')" class="mt-2" />
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <x-input-label for="password" :value="__('Password')" />
-                            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
-                            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                        </div>
-                        <div>
-                            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                        </div>
+                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800">
+                        <p class="font-semibold">Automated Security Password:</p>
+                        <p>A compliant randomized password will be auto-generated and shown on screen upon submission.</p>
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-4">

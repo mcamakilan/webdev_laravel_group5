@@ -4,7 +4,12 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Student Details & Attendance Logs') }}
             </h2>
-            <a href="{{ route('attendance') }}" class="text-sm text-teal-600 hover:text-teal-800 font-semibold">&larr; Back to Dashboard</a>
+            <div class="flex items-center space-x-4">
+                <span id="countdown-banner" class="text-xs font-bold text-amber-700 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full">
+                    Auto-closing in <span id="timer">5</span>s...
+                </span>
+                <a href="{{ route('attendance') }}" class="text-sm text-teal-600 hover:text-teal-800 font-semibold">&larr; Back to Dashboard</a>
+            </div>
         </div>
     </x-slot>
 
@@ -32,6 +37,7 @@
                         <h3 class="text-2xl font-bold text-gray-900">{{ $student->first_name }} {{ $student->last_name }}</h3>
                         <p class="text-sm text-gray-600"><strong>Student Number:</strong> {{ $student->student_number }}</p>
                         <p class="text-sm text-gray-600"><strong>Email:</strong> {{ $student->email }}</p>
+                        <p class="text-sm text-gray-600"><strong>College Program:</strong> {{ $student->college_program ?? 'N/A' }}</p>
                         <p class="text-sm text-gray-600"><strong>Year & Section:</strong> {{ $student->year_and_section }}</p>
                     </div>
                 </div>
@@ -59,7 +65,7 @@
                         @foreach($attendances as $record)
                             <li class="py-3 flex justify-between items-center text-sm">
                                 <span class="font-medium text-gray-700">Present</span>
-                                <span class="text-gray-500">{{ $record->created_at->format('F d, Y — h:i A') }}</span>
+                                <span class="text-gray-500">{{ $record->formatted_time }}</span>
                             </li>
                         @endforeach
                     </ul>
@@ -70,4 +76,23 @@
 
         </div>
     </div>
+
+    <!-- 5-SECOND AUTO-DISMISS SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let seconds = 5;
+            const timerElement = document.getElementById('timer');
+            
+            const interval = setInterval(function () {
+                seconds--;
+                if (timerElement) {
+                    timerElement.textContent = seconds;
+                }
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "{{ route('attendance') }}";
+                }
+            }, 1000);
+        });
+    </script>
 </x-app-layout>

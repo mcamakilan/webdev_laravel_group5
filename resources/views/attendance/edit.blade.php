@@ -40,10 +40,17 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <div>
-                        <x-input-label for="year_and_section" :value="__('Year & Section')" />
-                        <x-text-input id="year_and_section" class="block mt-1 w-full" type="text" name="year_and_section" :value="old('year_and_section', $student->year_and_section)" required />
-                        <x-input-error :messages="$errors->get('year_and_section')" class="mt-2" />
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="college_program" :value="__('College Program')" />
+                            <x-text-input id="college_program" class="block mt-1 w-full" type="text" name="college_program" :value="old('college_program', $student->college_program)" required />
+                            <x-input-error :messages="$errors->get('college_program')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="year_and_section" :value="__('Year & Section')" />
+                            <x-text-input id="year_and_section" class="block mt-1 w-full" type="text" name="year_and_section" :value="old('year_and_section', $student->year_and_section)" required />
+                            <x-input-error :messages="$errors->get('year_and_section')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div>

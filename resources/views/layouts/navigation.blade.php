@@ -17,8 +17,20 @@
                     </x-nav-link>
 
                     @if (Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('attendance')" :active="request()->routeIs('attendance*')">
+                        <x-nav-link :href="route('attendance')" :active="request()->routeIs('attendance')">
                             {{ __('Attendance') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('attendance.logs')" :active="request()->routeIs('attendance.logs')">
+                            {{ __('Logs') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users*')">
+                            {{ __('User Accounts') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if (Auth::user()->role === 'student')
+                        <x-nav-link :href="route('attendance.my-logs')" :active="request()->routeIs('attendance.my-logs')">
+                            {{ __('My Attendance') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -78,8 +90,20 @@
             </x-responsive-nav-link>
 
             @if (Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('attendance')" :active="request()->routeIs('attendance*')">
+                <x-responsive-nav-link :href="route('attendance')" :active="request()->routeIs('attendance')">
                     {{ __('Attendance') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('attendance.logs')" :active="request()->routeIs('attendance.logs')">
+                    {{ __('Logs') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users*')">
+                    {{ __('User Accounts') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if (Auth::user()->role === 'student')
+                <x-responsive-nav-link :href="route('attendance.my-logs')" :active="request()->routeIs('attendance.my-logs')">
+                    {{ __('My Attendance') }}
                 </x-responsive-nav-link>
             @endif
         </div>

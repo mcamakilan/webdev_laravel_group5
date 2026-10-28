@@ -18,4 +18,12 @@ class Attendance extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get created_at formatted explicitly in local Philippine Time
+     */
+    public function getFormattedTimeAttribute()
+    {
+        return $this->created_at->setTimezone('Asia/Manila')->format('F d, Y — h:i A');
+    }
 }

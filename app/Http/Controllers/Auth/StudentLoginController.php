@@ -3,46 +3,49 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class StudentLoginController extends Controller
 {
     /**
-     * Handle an incoming student authentication request.
+     * Handle an incoming student authentication request with 2FA
      */
     public function store(Request $request): RedirectResponse
     {
-        // 1. Validate the form data
         $credentials = $request->validate([
             'email'    => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        // 2. Attempt to log the user in using credentials and remember state
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
 
-        // 3. Check if the authenticated user has the 'student' role
-        if (Auth::user()->role !== 'student') {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
+        if ($user->role !== 'student') {
             throw ValidationException::withMessages([
                 'email' => 'This portal is restricted to Student accounts only.',
             ]);
         }
 
-        // 4. Regenerate session to prevent session fixation attacks
-        $request->session()->regenerate();
+        // Generate 2FA code and write to log
+        $otp = $user->generateTwoFactorCode();
+        Log::info("2FA OTP Code for Student ({$user->email}): {$otp}");
 
-        // 5. Redirect to the student destination (e.g., attendance route)
-        return redirect()->intended(route('attendance'));
+        session([
+            '2fa_user_id' => $user->id,
+            '2fa_remember' => $request->boolean('remember'),
+        ]);
+
+        return redirect()->route('2fa.index')
+            ->with('status', 'A 2FA code has been generated. (Test Code: ' . $otp . ')');
     }
 }
